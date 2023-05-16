@@ -1,20 +1,23 @@
+import os
 import base64
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
 print('Welcome to RSA Encryptor')
 def main():
-    user = input('What you want to do?\n[1] - Encrypt\n[2] - Decrypt\n')
+    user = input('What you want to do?\n[1] - Encrypt\n[2] - Decrypt\n[3] - Generate a key pair\n')
     if user == '1':
         rsaencrypt()
     elif user == '2':
         rsadecrypt()
+    elif user == '3':
+        rsakeysgenerator()
     else:
         print(f'ERROR: {user} - Incorrect argument')
 
 def rsaencrypt():
     print("WARNING: Check that the 'publickey.pem' file is in the 'keys/foreign' folders, otherwise an error may occur.")
-    input('Press anything to continue...')
+    input('Press ENTER to continue...')
     try:
         with open('keys/foreign/publickey.pem', 'rb') as f:
             key = RSA.importKey(f.read())
@@ -30,12 +33,12 @@ def rsaencrypt():
     
 def rsadecrypt():
     print("WARNING: Check that the 'privatekey.pem' file is in the 'keys' folders, otherwise an error may occur.")
-    input('Press anything to continue...')
+    input('Press ENTER to continue...')
     try:
         with open('keys/privatekey.pem', 'rb') as f:
             key = RSA.importKey(f.read())
     except FileNotFoundError:
-        print("ERROR: The 'privatekey.pem' file appears to be missing from the 'keys' folder.\nWithout it you will not be able to decrypt the message!\nCreate a new one using 'RSAKeysGenerator.py' and send 'publickey.pem' to your conversation partner")
+        print("ERROR: The 'privatekey.pem' file appears to be missing from the 'keys' folder.\nWithout it you will not be able to decrypt the message!\nGenerate a new key pair using the 'Generate a key pair' (3) option and send 'publickey.pem' to your conversation partner")
         return
     key = PKCS1_OAEP.new(key)
     msg = input('What message do you want to decrypt?\n')
@@ -47,6 +50,24 @@ def rsadecrypt():
         return
     dec_msg = dec_msg.decode('utf-8')
     print(f'Your decrypted message:\n----------\n{dec_msg}\n----------')
+
+def rsakeysgenerator():
+    user = input('Are you sure? (y/n): ')
+    if user == 'y':
+        print('Generating...')
+        key = RSA.generate(2048)
+        try:
+            os.mkdir('keys')
+            os.mkdir('keys/foreign')
+        except FileExistsError:
+            pass
+        with open('keys/privatekey.pem', 'wb') as f:
+            print('Creating private key file...')
+            f.write(key.export_key('PEM'))
+        with open('keys/publickey.pem', 'wb') as f:
+            print('Creating public key file...')
+            f.write(key.publickey().export_key('PEM'))
+        print('Done!')
 
 main()
 while True:
