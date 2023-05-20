@@ -26,7 +26,11 @@ def rsaencrypt():
         return
     key = PKCS1_OAEP.new(key)
     msg = str.encode(input('What message do you want to encrypt?\n'))
-    enc_msg = key.encrypt(msg)
+    try:
+        enc_msg = key.encrypt(msg)
+    except ValueError:
+        print('ERROR: The message is too big, try shortening it.')
+        return
     enc_msg = base64.b64encode(enc_msg)
     enc_msg = enc_msg.decode('utf-8')
     print(f'Your encrypted message:\n----------\n{enc_msg}\n----------')
