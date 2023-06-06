@@ -3,7 +3,6 @@ import base64
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
-print('Welcome to RSA Encryptor')
 def main():
     user = input('What you want to do?\n[1] - Encrypt\n[2] - Decrypt\n[3] - Generate a key pair\n')
     if user == '1':
@@ -73,10 +72,12 @@ def rsakeysgenerator():
             f.write(key.publickey().export_key('PEM'))
         print('Done!')
 
-main()
-while True:
-    user = input('Do you want to go back to the main menu? (y/n): ')
-    if user == 'y':
-        main()
-    else:
-        break
+if __name__ == '__main__':
+    print('Welcome to RSA Encryptor')
+    main()
+    while True:
+        user = input('Do you want to go back to the main menu? (y/n): ')
+        if user == 'y':
+            main()
+        else:
+            break
