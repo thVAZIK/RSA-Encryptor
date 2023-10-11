@@ -1,5 +1,6 @@
 import os
 import base64
+import time
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
 
@@ -58,6 +59,7 @@ def rsakeysgenerator():
     user = input('Are you sure? (y/n): ')
     if user == 'y':
         print('Generating...')
+        start_time = time.time()
         key = RSA.generate(2048)
         try:
             os.mkdir('keys')
@@ -70,7 +72,7 @@ def rsakeysgenerator():
         with open('keys/publickey.pem', 'wb') as f:
             print('Creating public key file...')
             f.write(key.publickey().export_key('PEM'))
-        print('Done!')
+        print(f'Done in {round(time.time()-start_time, 2)} seconds!')
 
 if __name__ == '__main__':
     print('Welcome to RSA Encryptor')
